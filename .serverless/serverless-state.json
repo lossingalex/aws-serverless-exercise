@@ -1,0 +1,1044 @@
+{
+  "service": {
+    "service": "aws-serverless",
+    "serviceObject": {
+      "name": "aws-serverless"
+    },
+    "provider": {
+      "stage": "devalexdemo",
+      "region": "ap-southeast-1",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._'\",\\-\\/\\(\\)]+?)}",
+      "name": "aws",
+      "runtime": "nodejs6.10",
+      "stackTags": {
+        "project": "serverless-workshop"
+      },
+      "environment": {
+        "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+        "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+      },
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem"
+          ],
+          "Resource": "arn:aws:dynamodb:ap-southeast-1:*:table/serverlessWorkshopalexdemo"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "s3:*"
+          ],
+          "Resource": "arn:aws:s3::*:*"
+        }
+      ],
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket"
+          },
+          "HelloLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/aws-serverless-devalexdemo-hello"
+            }
+          },
+          "HelloNameLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/aws-serverless-devalexdemo-helloName"
+            }
+          },
+          "AddTodoLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/aws-serverless-devalexdemo-addTodo"
+            }
+          },
+          "ListTodoLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/aws-serverless-devalexdemo-listTodo"
+            }
+          },
+          "CsvAddLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/aws-serverless-devalexdemo-csvAdd"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "devalexdemo",
+                        "aws-serverless",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-hello:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-helloName:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-addTodo:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-listTodo:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-csvAdd:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-hello:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-helloName:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-addTodo:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-listTodo:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/aws-serverless-devalexdemo-csvAdd:*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "dynamodb:Query",
+                          "dynamodb:Scan",
+                          "dynamodb:GetItem",
+                          "dynamodb:PutItem",
+                          "dynamodb:UpdateItem",
+                          "dynamodb:DeleteItem"
+                        ],
+                        "Resource": "arn:aws:dynamodb:ap-southeast-1:*:table/serverlessWorkshopalexdemo"
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "s3:*"
+                        ],
+                        "Resource": "arn:aws:s3::*:*"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "aws-serverless",
+                    "devalexdemo",
+                    "ap-southeast-1",
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "HelloLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z/aws-serverless.zip"
+              },
+              "FunctionName": "aws-serverless-devalexdemo-hello",
+              "Handler": "handler.hello",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+                  "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+                }
+              }
+            },
+            "DependsOn": [
+              "HelloLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "HelloLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "HelloLambdaFunction"
+              },
+              "CodeSha256": "OdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68="
+            }
+          },
+          "HelloNameLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z/aws-serverless.zip"
+              },
+              "FunctionName": "aws-serverless-devalexdemo-helloName",
+              "Handler": "handler.helloName",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+                  "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+                }
+              }
+            },
+            "DependsOn": [
+              "HelloNameLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "HelloNameLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "HelloNameLambdaFunction"
+              },
+              "CodeSha256": "OdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68="
+            }
+          },
+          "AddTodoLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z/aws-serverless.zip"
+              },
+              "FunctionName": "aws-serverless-devalexdemo-addTodo",
+              "Handler": "todo/add.add",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+                  "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+                }
+              }
+            },
+            "DependsOn": [
+              "AddTodoLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "AddTodoLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "AddTodoLambdaFunction"
+              },
+              "CodeSha256": "OdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68="
+            }
+          },
+          "ListTodoLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z/aws-serverless.zip"
+              },
+              "FunctionName": "aws-serverless-devalexdemo-listTodo",
+              "Handler": "todo/list.list",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+                  "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+                }
+              }
+            },
+            "DependsOn": [
+              "ListTodoLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "ListTodoLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ListTodoLambdaFunction"
+              },
+              "CodeSha256": "OdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68="
+            }
+          },
+          "CsvAddLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z/aws-serverless.zip"
+              },
+              "FunctionName": "aws-serverless-devalexdemo-csvAdd",
+              "Handler": "todo/csvAdd.add",
+              "MemorySize": 1024,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs6.10",
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DYNAMO_TABLE_NAME": "serverlessWorkshopalexdemo",
+                  "S3_BUCKET_NAME": "aws.serverless.workshop.devalexdemo"
+                }
+              }
+            },
+            "DependsOn": [
+              "CsvAddLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "CsvAddLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CsvAddLambdaFunction"
+              },
+              "CodeSha256": "OdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68="
+            }
+          },
+          "S3BucketAwsserverlessworkshopdevalexdemo": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "aws.serverless.workshop.devalexdemo",
+              "NotificationConfiguration": {
+                "LambdaConfigurations": [
+                  {
+                    "Event": "s3:ObjectCreated:Put",
+                    "Function": {
+                      "Fn::GetAtt": [
+                        "CsvAddLambdaFunction",
+                        "Arn"
+                      ]
+                    },
+                    "Filter": {
+                      "S3Key": {
+                        "Rules": [
+                          {
+                            "Name": "suffix",
+                            "Value": ".csv"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "DependsOn": [
+              "CsvAddLambdaPermissionAwsserverlessworkshopdevalexdemoS3"
+            ]
+          },
+          "CsvAddLambdaPermissionAwsserverlessworkshopdevalexdemoS3": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CsvAddLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "s3.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::aws.serverless.workshop.devalexdemo"
+                  ]
+                ]
+              }
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "devalexdemo-aws-serverless"
+            }
+          },
+          "ApiGatewayResourceHello": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "hello",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTodo": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "todo",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceHelloNameVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceHello"
+              },
+              "PathPart": "{name}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTodoAdd": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceTodo"
+              },
+              "PathPart": "add",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTodoList": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceTodo"
+              },
+              "PathPart": "list",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodHelloGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceHello"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "HelloLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodHelloNameVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceHelloNameVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "HelloNameLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodTodoAddPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceTodoAdd"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "AddTodoLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodTodoListGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceTodoList"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ListTodoLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1509529779383": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "devalexdemo"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodHelloGet",
+              "ApiGatewayMethodHelloNameVarGet",
+              "ApiGatewayMethodTodoAddPost",
+              "ApiGatewayMethodTodoListGet"
+            ]
+          },
+          "HelloLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "HelloLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HelloNameLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "HelloNameLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "AddTodoLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "AddTodoLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ListTodoLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ListTodoLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "serverlessDemoAlex": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "serverlessWorkshopalexdemo",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "id",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "id",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "HelloLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "HelloLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68"
+            }
+          },
+          "HelloNameLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "HelloNameLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68"
+            }
+          },
+          "AddTodoLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "AddTodoLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68"
+            }
+          },
+          "ListTodoLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ListTodoLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68"
+            }
+          },
+          "CsvAddLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CsvAddLambdaVersionOdunX5GbTXQFba9H5rKge047gIJ96pgBqRfYAAZLZ68"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.ap-southeast-1.amazonaws.com/devalexdemo"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "custom": {
+      "user": "alexdemo",
+      "dynamoDBTableName": "serverlessWorkshopalexdemo",
+      "s3BucketName": "aws.serverless.workshop.devalexdemo"
+    },
+    "functions": {
+      "hello": {
+        "handler": "handler.hello",
+        "events": [
+          {
+            "http": {
+              "path": "hello",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "aws-serverless-devalexdemo-hello",
+        "package": {},
+        "vpc": {}
+      },
+      "helloName": {
+        "handler": "handler.helloName",
+        "events": [
+          {
+            "http": {
+              "path": "hello/{name}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "aws-serverless-devalexdemo-helloName",
+        "package": {},
+        "vpc": {}
+      },
+      "addTodo": {
+        "handler": "todo/add.add",
+        "events": [
+          {
+            "http": {
+              "path": "todo/add",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "aws-serverless-devalexdemo-addTodo",
+        "package": {},
+        "vpc": {}
+      },
+      "listTodo": {
+        "handler": "todo/list.list",
+        "events": [
+          {
+            "http": {
+              "path": "todo/list",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "aws-serverless-devalexdemo-listTodo",
+        "package": {},
+        "vpc": {}
+      },
+      "csvAdd": {
+        "handler": "todo/csvAdd.add",
+        "events": [
+          {
+            "s3": {
+              "bucket": "aws.serverless.workshop.devalexdemo",
+              "event": "s3:ObjectCreated:Put",
+              "rules": [
+                {
+                  "suffix": ".csv"
+                }
+              ]
+            }
+          }
+        ],
+        "name": "aws-serverless-devalexdemo-csvAdd",
+        "package": {},
+        "vpc": {}
+      }
+    },
+    "resources": {
+      "Resources": {
+        "serverlessDemoAlex": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "serverlessWorkshopalexdemo",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "id",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+              }
+            ],
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        }
+      },
+      "Outputs": {}
+    },
+    "artifact": "/Users/Palo/alex/00-Palo/project/aws-serverless-exercise/.serverless/aws-serverless.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/aws-serverless/devalexdemo/1509529779245-2017-11-01T09:49:39.245Z",
+    "artifact": "aws-serverless.zip"
+  }
+}

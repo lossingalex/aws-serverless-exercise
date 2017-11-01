@@ -1,0 +1,178 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: aws-serverless
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+# You can add custom variables here
+custom:
+  user: alexdemo # Don't use caps and special letter as it will be used for S3 and DynamoDB naming. Both have their own naming rules
+  dynamoDBTableName: 'serverlessWorkshop${self:custom.user}'
+  s3BucketName: 'aws.serverless.workshop.${opt:stage, self:provider.stage}'
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev${self:custom.user}
+  region: ap-southeast-1 # For Singapore region
+  stackTags:
+    project: serverless-workshop
+# you can define service wide environment variables here
+  environment:
+    DYNAMO_TABLE_NAME: ${self:custom.dynamoDBTableName}
+    S3_BUCKET_NAME: ${self:custom.s3BucketName}
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:custom.dynamoDBTableName}"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "arn:aws:s3::*:*"
+
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+
+
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  hello:
+    handler: handler.hello
+    events: # All events associated with this function
+      - http:
+          path: hello
+          method: get
+
+  helloName:
+    handler: handler.helloName
+    events: # All events associated with this function
+      - http:
+          path: hello/{name}
+          method: get
+  
+  addTodo:
+    handler: todo/add.add
+    events: # All events associated with this function
+      - http:
+          path: todo/add
+          method: post
+
+  listTodo:
+    handler: todo/list.list
+    events: # All events associated with this function
+      - http:
+          path: todo/list
+          method: get
+
+  csvAdd:
+    handler: todo/csvAdd.add
+    events:
+      - s3:
+          bucket: ${self:custom.s3BucketName}
+          event: s3:ObjectCreated:Put
+          rules:
+            - suffix: .csv
+
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    serverlessDemoAlex:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.dynamoDBTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    # S3Bucket:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${self:custom.s3BucketName}
+
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
