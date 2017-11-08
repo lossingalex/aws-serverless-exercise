@@ -1,12 +1,14 @@
 'use strict';
+
 const AWS = require('aws-sdk');
 const csv = require('fast-csv');
+const uuidv4 = require('uuid/v4');
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const s3 = new AWS.S3();
 
 function addTask(task, name, dueDate) {
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     const params = {
       TableName: process.env.DYNAMO_TABLE_NAME,
       Item: {
@@ -18,40 +20,19 @@ function addTask(task, name, dueDate) {
         createdAt: new Date().getTime()
       },
     };
-    console.log('AWS docClient PARAMS', params);
 
     docClient.put(params, (error, data) => {
       // Handle AWS error
       if (error) {
-        // console.log(error);
-        // const response = {
-        //   statusCode: 501,
-        //   body: JSON.stringify({
-        //     message: `Server error while trying to add task.`,
-        //     Item: params.Item,
-        //     error: error,
-        //   }),
-        // };
         reject(error);
       }
-
       // Success
-      // const response = {
-      //   statusCode: 200,
-      //   body: JSON.stringify({
-      //     message: `Task added.`,
-      //     Item: params.Item,
-      //   }),
-      // };
-      // return callback(null, response);
       resolve(params.Item);
     });
   });
 }
 
 module.exports.add = (event, context, callback) => {
-  console.log('=========== event', event);
-
   event.Records.forEach((record) => {
     const bucketName = record.s3.bucket.name;
     const filename = record.s3.object.key;
@@ -59,18 +40,19 @@ module.exports.add = (event, context, callback) => {
       Bucket: bucketName,
       Key: filename
     };
-
-    console.log('=== params', params);
     const csvStream = s3.getObject(params).createReadStream();
 
     csv
     .fromStream(csvStream, {headers : true})
     .on("data", function(data){
-      // addTask()
-        console.log(data);
-    })
-    .on("end", function(){
-        console.log("done");
+      const { task, name, dueDate } = data;
+      addTask(task, name, dueDate)
+      .then((result) => {
+        console.log('Task added', result);
+      })
+      .catch((e) => {
+        console.log('Something happened. To hanlde:', data, e);
+      })
     });
     // TODO get and process file
   });
@@ -79,7 +61,7 @@ module.exports.add = (event, context, callback) => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'TODO'
+      message: 'Done'
     }),
   };
 
