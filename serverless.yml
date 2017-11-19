@@ -48,7 +48,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "s3:*"
-      Resource: "arn:aws:s3::*:*"
+      Resource: "arn:aws:s3::*:${self:custom.s3BucketName}"
 
 #    - Effect: "Allow"
 #      Action:
@@ -65,8 +65,6 @@ provider:
 #            - "/*"
 
 
-
-
 # you can add packaging information here
 #package:
 #  include:
@@ -78,35 +76,35 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: src/handler.hello
     events: # All events associated with this function
       - http:
           path: hello
           method: get
 
   helloName:
-    handler: handler.helloName
+    handler: src/handler.helloName
     events: # All events associated with this function
       - http:
           path: hello/{name}
           method: get
   
   addTodo:
-    handler: todo/add.add
+    handler: src/todo/add.add
     events: # All events associated with this function
       - http:
           path: todo/add
           method: post
 
   listTodo:
-    handler: todo/list.list
+    handler: src/todo/list.list
     events: # All events associated with this function
       - http:
           path: todo/list
           method: get
 
   csvAdd:
-    handler: todo/csvAdd.add
+    handler: src/todo/csvAdd.add
     events:
       - s3:
           bucket: ${self:custom.s3BucketName}
@@ -162,10 +160,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-    # S3Bucket:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: ${self:custom.s3BucketName}
 
 #  Resources:
 #    NewResource:
